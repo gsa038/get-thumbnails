@@ -35,15 +35,10 @@ class PostThumbnailsArchive
     {
         $archivePath = null;
         if ($this->isValidUploadedImage() && $this->writeSourceFileNamePartsToProperties()) {
+            $archivePath = $this->getThumbnailsArchive();
             $status = 200;
             $message = 'OK';
             $messageDescription = '';
-            $archivePath = $this->getThumbnailsArchive();
-            if ($archivePath === 'error') {
-                $status = 500;
-                $message = 'API internal error';
-                $messageDescription = 'Thumbnails archive creation problem';
-            }
         } else {
             $message = 'Bad Request';
             $messageDescription = 'Wrong input file';
@@ -115,13 +110,8 @@ class PostThumbnailsArchive
             $zip->addFile($thumbnailPath, $thumbnailFileName);
             array_push($archivedThumbnails, $thumbnailPath);
         }
-        try {
-            $zip->close();
-        } catch (Exception $ex) {
-            return 'error';
-        } finally {
-            $this->deleteProcessedThumbnailFiles($archivedThumbnails);
-        }
+        $zip->close();
+        $this->deleteProcessedThumbnailFiles($archivedThumbnails);
         return $archiveName;
     }
 
