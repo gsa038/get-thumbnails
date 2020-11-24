@@ -83,17 +83,17 @@ class PostThumbnailsArchive
         return false;
     }
 
-    public function getUploadedImagePath() : string
+    private function getUploadedImagePath() : string
     {
         return $_FILES['image']['tmp_name'];
     }
 
-    public function getArchiveName(string $tmpName, string $realName) : string
+    private function getArchiveName(string $tmpName, string $realName) : string
     {
         return md5($tmpName . $realName);
     }
 
-    public function getThumbnailsArchive(): string
+    private function getThumbnailsArchive(): string
     {
         $archiveName = $this->getArchiveName($this->getUploadedImagePath(), $this->sourceFileNamePart);
         $archivePath = $this->thumbnailsArchivePath . $archiveName;
@@ -115,7 +115,7 @@ class PostThumbnailsArchive
         return $archiveName;
     }
 
-    public function getThumbnail(int $columns, int $rows, string $sourcePath): string
+    private function getThumbnail(int $columns, int $rows, string $sourcePath): string
     {
         $resultPath = $sourcePath . '_' . $columns . '_' . $rows;
         $thumbnail = new Imagick($sourcePath);
