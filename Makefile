@@ -20,7 +20,7 @@ help:
 
 init:
 	@$(shell cp -n $(shell pwd)/api/composer.json.dist $(shell pwd)/api/composer.json 2> /dev/null)
-	@$(shell mkdir $(shell pwd)/api/thumbnails $(shell pwd)/logs/api $(shell pwd)/logs/client) 
+	@$(shell mkdir -p $(shell pwd)/api/thumbnails $(shell pwd)/logs/api $(shell pwd)/logs/client) 
 	@$(shell chown -R 777 $(shell pwd)/api/thumbnails $(shell pwd)/logs)
 
 apidoc:
