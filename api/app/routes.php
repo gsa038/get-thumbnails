@@ -1,7 +1,7 @@
  <?php
 
-use App\Controller\GetThumbnailsArchive;
-use App\Controller\PostThumbnailsArchive;
+use App\Application\Controller\Thumbnails\GetThumbnailsArchive;
+use App\Application\Controller\Thumbnails\PostThumbnailsArchive;
 use Slim\App;
 
 return function (App $app) {

@@ -1,3 +1,3 @@
 <?php
 
-(require __DIR__ . '/../app/bootstrap.php')->run();
+require __DIR__ . '/../app/bootstrap.php';

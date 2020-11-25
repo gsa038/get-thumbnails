@@ -1,33 +1,19 @@
 <?php
+declare(strict_types=1);
 
-// Error reporting for production
-error_reporting(0);
-ini_set('display_errors', '0');
+use DI\ContainerBuilder;
+use Monolog\Logger;
 
-// Timezone
-date_default_timezone_set('Europe/Moscow');
-
-// Settings
-    $settings = [];
-
-// Path settings
-$settings['root'] = dirname(__DIR__);
-$settings['temp'] = $settings['root'] . '/tmp';
-$settings['public'] = $settings['root'] . '/public';
-
-// Error Handling Middleware settings
-$settings['error'] = [
-
-    // Should be set to false in production
-    'display_error_details' => false,
-
-    // Parameter is passed to the default ErrorHandler
-    // View in rendered output by enabling the "displayErrorDetails" setting.
-    // For the console and unit tests we also disable it
-    'log_errors' => false,
-
-    // Display error details in error log
-    'log_error_details' => false,
-];
-
-return $settings;
+return function (ContainerBuilder $containerBuilder) {
+    // Global Settings Object
+    $containerBuilder->addDefinitions([
+        'settings' => [
+            'displayErrorDetails' => true, // Should be set to false in production
+            'logger' => [
+                'name' => 'slim-app',
+                'path' => isset($_ENV['docker']) ? 'php://stdout' : __DIR__ . '/../logs/app.log',
+                'level' => Logger::DEBUG,
+            ],
+        ],
+    ]);
+};
