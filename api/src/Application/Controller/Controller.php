@@ -17,12 +17,10 @@ abstract class Controller
 
     protected Response $response;
 
-    protected array $args;
-
     public function __construct(LoggerInterface $logger)
     {
         $this->logger = $logger;
     }
 
-    abstract public function __invoke(Request $request, Response $response, $args): Response;
+    abstract public function __invoke(Request $request, Response $response): Response;
 }
