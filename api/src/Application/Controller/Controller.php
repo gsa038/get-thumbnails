@@ -11,7 +11,7 @@ use Slim\Exception\HttpNotFoundException;
 
 abstract class Controller
 {
-    // protected LoggerInterface $logger;
+    protected LoggerInterface $logger;
 
     protected Request $request;
 
@@ -19,10 +19,10 @@ abstract class Controller
 
     protected array $args;
 
-    // public function __construct(LoggerInterface $logger)
-    // {
-    //     $this->logger = $logger;
-    // }
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
 
     abstract public function __invoke(Request $request, Response $response, $args): Response;
 }

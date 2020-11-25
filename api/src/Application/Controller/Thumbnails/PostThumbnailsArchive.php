@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace App\Application\Controller\Thumbnails;
 
+use App\Application\Controller\Controller;
 use App\Application\Thumbnails\Thumbnails;
 use App\Application\Thumbnails\ThumbnailsSource;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-class PostThumbnailsArchive
+class PostThumbnailsArchive extends Controller
 {
     public function __invoke(ServerRequestInterface $request, 
                         ResponseInterface $response
