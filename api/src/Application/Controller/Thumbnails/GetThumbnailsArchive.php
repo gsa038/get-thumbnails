@@ -11,10 +11,6 @@ use Slim\Psr7\Stream;
 
 class GetThumbnailsArchive extends Controller
 {
-
-    const TUMBNAILS_ARCHIVE_PATH = '/var/www/thumbnails/';
-    private string $archive = '';
-
     public function __invoke(ServerRequestInterface $request, 
                         ResponseInterface $response
                         ): ResponseInterface

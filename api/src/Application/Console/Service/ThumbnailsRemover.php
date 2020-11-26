@@ -2,13 +2,18 @@
 
 declare(strict_types=1);
 
-namespace App\Application\Controller\Thumbnails\Service;
+namespace App\Application\Console\Service;
 
 use App\Application\Thumbnails\Thumbnails;
 
 class ThumbnailsRemover
 {
-    public static function deleteExpiredThumbnails() : void
+    public function __invoke()
+    {
+        $this->deleteExpiredThumbnails();
+    }
+
+    private function deleteExpiredThumbnails() : void
     {
         $dir = Thumbnails::THUMBNAILS_ARCHIVE_PATH;
         foreach (glob($dir."*") as $file) {

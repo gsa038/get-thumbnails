@@ -17,7 +17,8 @@ RUN apt-get update && apt-get upgrade -y \
     && apt-get remove -y g++ wget \
     && apt-get autoremove --purge -y && apt-get autoclean -y && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/* \
-    && rm -rf /tmp/* /var/tmp/*
+    && rm -rf /tmp/* /var/tmp/* \
+    && echo '25 6    * * *   root    test -x /usr/bin/php /var/www/src/Application/Console/Service/ThumbnailsRemover.php' >> /etc/crontab 
 
 
 
