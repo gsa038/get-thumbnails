@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Application\Controller;
 
+use Exception;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Log\LoggerInterface;
@@ -22,5 +23,38 @@ abstract class Controller
         $this->logger = $logger;
     }
 
-    abstract public function __invoke(Request $request, Response $response): Response;
+    public function __invoke(Request $request, Response $response): Response
+    {
+        $this->request = $request;
+        $this->response = $response;
+
+        try {
+            return $this->action($request, $response);
+        } catch (Exception $e) {
+            throw new HttpNotFoundException($this->request, $e->getMessage());
+        }
+    }
+
+
+    abstract protected function action(Request $request, Response $response): Response;
+
+        /**
+     * @param  array|object|null $data
+     */
+    protected function respondWithData($data = null, int $statusCode = 200): Response
+    {
+        $payload = new ControllerPayload($statusCode, $data);
+
+        return $this->respond($payload);
+    }
+
+    protected function respond(ControllerPayload $payload): Response
+    {
+        $json = json_encode($payload, JSON_PRETTY_PRINT);
+        $this->response->getBody()->write($json);
+
+        return $this->response
+                    ->withHeader('Content-Type', 'application/json')
+                    ->withStatus($payload->getStatusCode());
+    }
 }

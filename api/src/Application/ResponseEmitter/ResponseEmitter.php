@@ -18,7 +18,7 @@ class ResponseEmitter extends SlimResponseEmitter
         if (ob_get_contents()) {
             ob_clean();
         }
-
+        
         parent::emit($response);
     }
 }

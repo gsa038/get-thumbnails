@@ -5,27 +5,19 @@ declare(strict_types=1);
 namespace App\Application\Controller\Thumbnails;
 
 use App\Application\Controller\Controller;
+use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Psr7\Stream;
 
 class GetThumbnailsArchive extends Controller
 {
-    public function __invoke(ServerRequestInterface $request, 
+    public function action(ServerRequestInterface $request, 
                         ResponseInterface $response
                         ): ResponseInterface
     {
         if (!file_exists($this->thumbnailsArchivePath . $request->getAttribute('archive'))) {
-            $message = 'Not found';
-            $messageDescription = 'Archive not found';
-            $status = 404;
-            $response->getBody()->write(json_encode([
-                'message' => $message, 
-                'statusCode' => "$status", 
-                'description' => $messageDescription, 
-                'archive' => $this->archive
-            ]));
-            return $response->withStatus($status, $message);
+            throw new Exception('Archive not found');
         }
         $this->archive = $request->getAttribute('archive');
         $archivePath = $this->thumbnailsArchivePath . $this->archive;

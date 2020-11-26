@@ -10,6 +10,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Slim\Exception\HttpBadRequestException;
 use Slim\Exception\HttpException;
 use Slim\Exception\HttpForbiddenException;
+use Slim\Exception\HttpInternalServerErrorException;
 use Slim\Exception\HttpMethodNotAllowedException;
 use Slim\Exception\HttpNotFoundException;
 use Slim\Exception\HttpNotImplementedException;

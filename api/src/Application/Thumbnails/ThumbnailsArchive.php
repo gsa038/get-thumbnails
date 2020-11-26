@@ -43,20 +43,24 @@ class ThumbnailsArchive
     private function getThumbnailsArchive() : string
     {
         $sourceImage = new ThumbnailsSource('image');
-        $archiveName = $this->getArchiveName($sourceImage->thumbnailsSourcePath, $sourceImage->sourceFileNamePart);
+        $archiveName = $this->getArchiveName($sourceImage->getThumbnailsSourcePath(), $sourceImage->getSourceFileNamePart());
         $archivePath = self::THUMBNAILS_ARCHIVE_PATH . $archiveName;
         $zip = new ZipArchive();
-        if (!$zip->open($archivePath, ZipArchive::CREATE)) {
-            throw new Exception("Can't write new archive file");
-        }
-        $thumbnailNameBase = $sourceImage->getSourceFileNamePart;
+        $zip->open($archivePath, ZipArchive::CREATE);
+        $thumbnailList = [];
         foreach ($this->thumbnailSizes as list($rows,$columns)) {
-            $thumbnailNameAddition = $rows . '_' . $columns . '.' . $sourceImage->sourceFileExtensionPart;
-            $thumbnail = new Thumbnail($columns, $rows, $sourceImage->thumbnailsSourcePath);
-            $thumbnailFileName = $thumbnailNameBase . '_' . $thumbnailNameAddition;
+            $thumbnailNameAddition = '_' . $rows . '_' . $columns;
+            $thumbnail = new Thumbnail($columns, $rows, $sourceImage->getThumbnailsSourcePath());
+            $thumbnailFileName = $sourceImage->getSourceFileNamePart() . $thumbnailNameAddition . '.' . $sourceImage->getSourceFileExtensionPart();
             $zip->addFile($thumbnail->getThumbnailPath(), $thumbnailFileName);
         }
-        $zip->close();
+        try {
+            $zip->close();
+        } catch (Exception $e) {
+            throw new Exception("Can't write new archive file");
+        } finally {
+            $thumbnailList = null;
+        }
         return $archiveName;
     }
 }
