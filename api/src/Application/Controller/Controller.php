@@ -8,7 +8,6 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Log\LoggerInterface;
 use Slim\Exception\HttpBadRequestException;
-use Slim\Exception\HttpNotFoundException;
 
 abstract class Controller
 {
@@ -31,10 +30,9 @@ abstract class Controller
         try {
             return $this->action($request, $response);
         } catch (Exception $e) {
-            throw new HttpNotFoundException($this->request, $e->getMessage());
+            throw new HttpBadRequestException($this->request, $e->getMessage());
         }
     }
-
 
     abstract protected function action(Request $request, Response $response): Response;
 

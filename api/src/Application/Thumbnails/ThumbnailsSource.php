@@ -15,24 +15,21 @@ class ThumbnailsSource
     public function __construct(string $sourceFileKey)
     {
         $this->isValid = $this->isValidThumbnailsSource($sourceFileKey);
-        if (!$this->isValid) 
+        if ($this->isValid) 
         {
-            throw new Exception("Not valid source image");
-        }
-        $sourceFileFullName = $_FILES[$sourceFileKey]['name'];
-        $this->thumbnailsSourcePath = $_FILES[$sourceFileKey]["tmp_name"];
-        $sourceFileFullName = trim($sourceFileFullName, " \.");
-        $nameParts = explode('.', $sourceFileFullName);
-        $namePartsCount = count(($nameParts));
-        if ($namePartsCount > 2) {
-            $this->sourceFileExtensionPart = $nameParts[$namePartsCount - 1];
-            $this->sourceFileNamePart = implode('.', array_slice($nameParts, 0, $namePartsCount - 1));
-        }elseif ($namePartsCount === 2) {
-            list($this->sourceFileNamePart, $this->sourceFileExtensionPart) = $nameParts;
-        } elseif ($namePartsCount === 1)  {
-            $this->sourceFileNamePart = $nameParts[0];
-        } else {
-            throw new Exception("Source file name problem");
+            $sourceFileFullName = $_FILES[$sourceFileKey]['name'];
+            $this->thumbnailsSourcePath = $_FILES[$sourceFileKey]["tmp_name"];
+            $sourceFileFullName = trim($sourceFileFullName, " \.");
+            $nameParts = explode('.', $sourceFileFullName);
+            $namePartsCount = count(($nameParts));
+            if ($namePartsCount > 2) {
+                $this->sourceFileExtensionPart = $nameParts[$namePartsCount - 1];
+                $this->sourceFileNamePart = implode('.', array_slice($nameParts, 0, $namePartsCount - 1));
+            }elseif ($namePartsCount === 2) {
+                list($this->sourceFileNamePart, $this->sourceFileExtensionPart) = $nameParts;
+            } elseif ($namePartsCount === 1)  {
+                $this->sourceFileNamePart = $nameParts[0];
+            }
         }
     }
 
@@ -65,6 +62,5 @@ class ThumbnailsSource
                 return false;
             }
         }
-        return false;
     }
 }

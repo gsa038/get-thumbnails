@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Application\Thumbnails;
 
+use App\Application\Thumbnails\Exceptions\ThumbnailsInternalServerErrorException;
 use Exception;
 use Imagick;
 
@@ -25,7 +26,11 @@ class Thumbnail{
         $resultPath = $sourcePath . '_' . $columns . '_' . $rows;
         $thumbnail = new Imagick($sourcePath);
         $thumbnail->thumbnailImage($columns, $rows);
-        $thumbnail->writeImage($resultPath);
+        try {
+            $thumbnail->writeImage($resultPath);
+        } catch (Exception $ex) {
+            throw new ThumbnailsInternalServerErrorException('Can\'t write thumbnail file');
+        }
         $thumbnail->clear();
         return $resultPath;
     }

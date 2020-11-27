@@ -1,5 +1,4 @@
 <?php 
-
 declare(strict_types=1);
 
 namespace App\Application\Console\Service;
@@ -17,7 +16,8 @@ class ThumbnailsRemover
     {
         $dir = ThumbnailsArchive::THUMBNAILS_ARCHIVE_PATH;
         foreach (glob($dir."*") as $file) {
-            if(time() - filectime($file) > 86400){
+            echo "$file : filesize($file)";
+            if(time() - filectime($file) > 400){
                 unlink($file);
             }
         }

@@ -43,6 +43,7 @@ services:
         - ./api:/var/www
         - ./config/docker/php/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
         - ./config/docker/php/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+        - ./config/docker/php/thumbnailsDelete:/etc/cron.daily/thumbnailsDelete
     restart: always
   composer:
     image: composer:latest

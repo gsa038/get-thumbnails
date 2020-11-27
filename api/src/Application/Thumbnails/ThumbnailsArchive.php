@@ -3,15 +3,17 @@ declare(strict_types=1);
 
 namespace App\Application\Thumbnails;
 
+use App\Application\Thumbnails\Exceptions\ThumbnailsBadRequestException;
+use App\Application\Thumbnails\Exceptions\ThumbnailsInternalServerErrorException;
 use App\Application\Thumbnails\ThumbnailsSource;
-use Exception;
-use Imagick;
 use ZipArchive;
+use JsonSerializable;
 
-class ThumbnailsArchive
+class ThumbnailsArchive implements JsonSerializable
 {
     const THUMBNAILS_ARCHIVE_PATH = '/var/www/thumbnails/';
-    private string $archivePath;
+    private string $archiveName;
+    private int $archiveSize;
     private array $thumbnailSizes = [
         [1000,1000],
         [900,900],
@@ -27,27 +29,31 @@ class ThumbnailsArchive
 
     public function __construct()
     {
-        $this->archivePath = $this->getThumbnailsArchive();
+        $this->createThumbnailsArchive();
+        $this->archiveSize = $this->getArchiveSize();
     }
 
-    public function getArchivepath() : string
+    public function getArchiveName() : string
     {
-        return $this->archivePath;
+        return $this->archiveName;
     }
 
-    private function getArchiveName(string $tmpPath, string $realName) : string
+    private function setArchiveName(string $tmpPath, string $realName) : void
     {
-        return md5($tmpPath . $realName);
+        $this->archiveName = md5($tmpPath . $realName);
     }
 
-    private function getThumbnailsArchive() : string
+    private function createThumbnailsArchive() : void
     {
         $sourceImage = new ThumbnailsSource('image');
-        $archiveName = $this->getArchiveName($sourceImage->getThumbnailsSourcePath(), $sourceImage->getSourceFileNamePart());
-        $archivePath = self::THUMBNAILS_ARCHIVE_PATH . $archiveName;
+        if (!$sourceImage->getIsValid()) {
+            throw new ThumbnailsBadRequestException('Wrong input file');
+        }
+        $this->setArchiveName($sourceImage->getThumbnailsSourcePath(), $sourceImage->getSourceFileNamePart());
+        $archivePath = self::THUMBNAILS_ARCHIVE_PATH . $this->archiveName;
         $zip = new ZipArchive();
         if (!$zip->open($archivePath, ZipArchive::CREATE)) {
-            $this->logger->error("Can't write new archive file");
+            throw new ThumbnailsInternalServerErrorException('Can\'t write new archive file');
         }
         foreach ($this->thumbnailSizes as list($rows,$columns)) {
             $thumbnailNameAddition = '_' . $rows . '_' . $columns;
@@ -56,6 +62,18 @@ class ThumbnailsArchive
             $zip->addFile($thumbnail->getThumbnailPath(), $thumbnailFileName);
         }
         $zip->close();
-        return $archiveName;
+    }
+
+    private function getArchiveSize() : int
+    {
+        return filesize(self::THUMBNAILS_ARCHIVE_PATH . $this->archiveName);
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            'archiveName' => $this->archiveName,
+            'archiveSize' => $this->archiveSize,
+        ];
     }
 }

@@ -13,10 +13,6 @@ require __DIR__ . '/../vendor/autoload.php';
 // Instantiate PHP-DI ContainerBuilder
 $containerBuilder = new ContainerBuilder();
 
-// if (false) { // Should be set to true in production
-// 	$containerBuilder->enableCompilation(__DIR__ . '/../var/cache');
-// }
-
 // Set up settings
 $settings = require __DIR__ . '/../app/settings.php';
 $settings($containerBuilder);
@@ -28,6 +24,7 @@ $dependencies($containerBuilder);
 // Build PHP-DI Container instance
 $container = $containerBuilder->build();
 
+ob_start();
 // Instantiate the app
 AppFactory::setContainer($container);
 $app = AppFactory::create();
@@ -52,10 +49,6 @@ $request = $serverRequestCreator->createServerRequestFromGlobals();
 $responseFactory = $app->getResponseFactory();
 $errorHandler = new HttpErrorHandler($callableResolver, $responseFactory);
 
-// Create Shutdown Handler
-$shutdownHandler = new ShutdownHandler($request, $errorHandler, $displayErrorDetails);
-register_shutdown_function($shutdownHandler);
-
 // Add Routing Middleware
 $app->addRoutingMiddleware();
 
@@ -67,3 +60,4 @@ $errorMiddleware->setDefaultErrorHandler($errorHandler);
 $response = $app->handle($request);
 $responseEmitter = new ResponseEmitter();
 $responseEmitter->emit($response);
+ob_end_flush();

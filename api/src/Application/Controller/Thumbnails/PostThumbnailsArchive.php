@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Application\Controller\Thumbnails;
 
 use App\Application\Controller\Controller;
+use App\Application\Thumbnails\Exceptions\ThumbnailsBadRequestException;
 use App\Application\Thumbnails\ThumbnailsArchive;
 use App\Application\Thumbnails\ThumbnailsSource;
 use Exception;
@@ -17,22 +18,8 @@ class PostThumbnailsArchive extends Controller
                         ResponseInterface $response
                         ): ResponseInterface
     {
-        $sourceImage = new ThumbnailsSource('image');
-        if (!$sourceImage->getIsValid()) {
-            $this->logger->error('Wrong input file');
-        }
         $thumbnailsArchive = new ThumbnailsArchive();
-        $archivePath = $thumbnailsArchive->getArchivepath();
-        $status = 200;
-        $message = 'OK';
-        $messageDescription = '';
-        $response->getBody()->write(json_encode([
-            'message' => $message, 
-            'statusCode' => $status, 
-            'description' => $messageDescription, 
-            'archive' => $archivePath
-        ]));
-        return $response->withStatus($status, $message);
+        return $this->respondWithData($thumbnailsArchive);
     }
 
 
