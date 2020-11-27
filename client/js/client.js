@@ -54,7 +54,6 @@ function sendImageFile(){
       contentType: false,
       processData: false,
       success: function(response){
-          console.log(response);
           if (response['statusCode'] === 200) {
             $('#image-loader-btn').attr({
                 class: 'fas fa-10x fa-arrow-down down-image-loader-btn',
