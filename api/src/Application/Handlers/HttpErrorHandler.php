@@ -5,7 +5,6 @@ namespace App\Application\Handlers;
 
 use App\Application\Controller\ControllerError;
 use App\Application\Controller\ControllerPayload;
-use Exception;
 use Psr\Http\Message\ResponseInterface as Response;
 use Slim\Exception\HttpBadRequestException;
 use Slim\Exception\HttpException;
@@ -48,6 +47,8 @@ class HttpErrorHandler extends SlimErrorHandler
                 $error->setType(ControllerError::BAD_REQUEST);
             } elseif ($exception instanceof HttpNotImplementedException) {
                 $error->setType(ControllerError::NOT_IMPLEMENTED);
+            } elseif ($exception instanceof HttpInternalServerErrorException) {
+                $error->setType(ControllerError::SERVER_ERROR);
             }
         }
 

@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace App\Application\Controller\Thumbnails;
 
 use App\Application\Controller\Controller;
-use Exception;
+use App\Application\Thumbnails\Errors\ThumbnailsArchiveNotFoundException;
+use App\Application\Thumbnails\ThumbnailsArchive;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Psr7\Stream;
@@ -16,11 +17,11 @@ class GetThumbnailsArchive extends Controller
                         ResponseInterface $response
                         ): ResponseInterface
     {
-        if (!file_exists($this->thumbnailsArchivePath . $request->getAttribute('archive'))) {
-            throw new Exception('Archive not found');
+        if (!file_exists(ThumbnailsArchive::THUMBNAILS_ARCHIVE_PATH . $request->getAttribute('archive'))) {
+            throw new ThumbnailsArchiveNotFoundException($request);
         }
         $this->archive = $request->getAttribute('archive');
-        $archivePath = $this->thumbnailsArchivePath . $this->archive;
+        $archivePath = ThumbnailsArchive::THUMBNAILS_ARCHIVE_PATH . $this->archive;
         $status = 200;
         $message = 'OK';
         $fileHandler = fopen($archivePath, 'rb');

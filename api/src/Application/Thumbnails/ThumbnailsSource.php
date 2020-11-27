@@ -17,7 +17,7 @@ class ThumbnailsSource
         $this->isValid = $this->isValidThumbnailsSource($sourceFileKey);
         if (!$this->isValid) 
         {
-            throw new Exception("Not valid Source image");
+            throw new Exception("Not valid source image");
         }
         $sourceFileFullName = $_FILES[$sourceFileKey]['name'];
         $this->thumbnailsSourcePath = $_FILES[$sourceFileKey]["tmp_name"];
@@ -59,7 +59,11 @@ class ThumbnailsSource
     public function isValidThumbnailsSource(string $sourceFileKey) : bool
     {
         if (count($_FILES) === 1) {
-            return $_FILES[$sourceFileKey] !== null && (substr($_FILES[$sourceFileKey]['type'], 0, 5) === 'image');
+            try {
+                return $_FILES[$sourceFileKey] !== null && (substr($_FILES[$sourceFileKey]['type'], 0, 5) === 'image');
+            } catch (Exception $ex) {
+                return false;
+            }
         }
         return false;
     }

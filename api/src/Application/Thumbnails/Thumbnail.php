@@ -15,13 +15,6 @@ class Thumbnail{
         $this->thumbnailPath = $this->createThumbnail($columns, $rows, $sourcePath);
     }
 
-    public function __destruct()
-    {
-        if (!unlink($this->thumbnailPath)) {
-            throw new Exception("Can't delete thumbnail file");
-        }
-    }
-
     public function getThumbnailPath() : string
     {
         return $this->thumbnailPath;

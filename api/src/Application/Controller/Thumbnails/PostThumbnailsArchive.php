@@ -19,7 +19,7 @@ class PostThumbnailsArchive extends Controller
     {
         $sourceImage = new ThumbnailsSource('image');
         if (!$sourceImage->getIsValid()) {
-            throw new Exception('Wrong input file');
+            $this->logger->error('Wrong input file');
         }
         $thumbnailsArchive = new ThumbnailsArchive();
         $archivePath = $thumbnailsArchive->getArchivepath();

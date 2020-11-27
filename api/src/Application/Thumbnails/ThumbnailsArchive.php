@@ -46,21 +46,16 @@ class ThumbnailsArchive
         $archiveName = $this->getArchiveName($sourceImage->getThumbnailsSourcePath(), $sourceImage->getSourceFileNamePart());
         $archivePath = self::THUMBNAILS_ARCHIVE_PATH . $archiveName;
         $zip = new ZipArchive();
-        $zip->open($archivePath, ZipArchive::CREATE);
-        $thumbnailList = [];
+        if (!$zip->open($archivePath, ZipArchive::CREATE)) {
+            $this->logger->error("Can't write new archive file");
+        }
         foreach ($this->thumbnailSizes as list($rows,$columns)) {
             $thumbnailNameAddition = '_' . $rows . '_' . $columns;
             $thumbnail = new Thumbnail($columns, $rows, $sourceImage->getThumbnailsSourcePath());
             $thumbnailFileName = $sourceImage->getSourceFileNamePart() . $thumbnailNameAddition . '.' . $sourceImage->getSourceFileExtensionPart();
             $zip->addFile($thumbnail->getThumbnailPath(), $thumbnailFileName);
         }
-        try {
-            $zip->close();
-        } catch (Exception $e) {
-            throw new Exception("Can't write new archive file");
-        } finally {
-            $thumbnailList = null;
-        }
+        $zip->close();
         return $archiveName;
     }
 }
