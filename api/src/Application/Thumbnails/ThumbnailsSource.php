@@ -19,17 +19,7 @@ class ThumbnailsSource
         {
             $sourceFileFullName = $_FILES[$sourceFileKey]['name'];
             $this->thumbnailsSourcePath = $_FILES[$sourceFileKey]["tmp_name"];
-            $sourceFileFullName = trim($sourceFileFullName, " \.");
-            $nameParts = explode('.', $sourceFileFullName);
-            $namePartsCount = count(($nameParts));
-            if ($namePartsCount > 2) {
-                $this->sourceFileExtensionPart = $nameParts[$namePartsCount - 1];
-                $this->sourceFileNamePart = implode('.', array_slice($nameParts, 0, $namePartsCount - 1));
-            }elseif ($namePartsCount === 2) {
-                list($this->sourceFileNamePart, $this->sourceFileExtensionPart) = $nameParts;
-            } elseif ($namePartsCount === 1)  {
-                $this->sourceFileNamePart = $nameParts[0];
-            }
+            list($this->sourceFileNamePart, $this->sourceFileExtensionPart) = $this->getSourceFileNameParts($sourceFileFullName);
         }
     }
 
@@ -62,5 +52,22 @@ class ThumbnailsSource
                 return false;
             }
         }
+    }
+
+    private function getSourceFileNameParts(string $sourceFileFullName) : array
+    {
+        $sourceFileFullName = trim($sourceFileFullName, " \.");
+            $nameParts = explode('.', $sourceFileFullName);
+            $namePartsCount = count(($nameParts));
+            if ($namePartsCount > 2) {
+                $sourceFileExtensionPart = $nameParts[$namePartsCount - 1];
+                $sourceFileNamePart = implode('.', array_slice($nameParts, 0, $namePartsCount - 1));
+            }elseif ($namePartsCount === 2) {
+                list($sourceFileNamePart, $sourceFileExtensionPart) = $nameParts;
+            } elseif ($namePartsCount === 1)  {
+                $sourceFileNamePart = $nameParts[0];
+                $sourceFileExtensionPart = '';
+            }
+            return [$sourceFileNamePart, $$sourceFileExtensionPart];
     }
 }

@@ -16,6 +16,14 @@ class Thumbnail{
         $this->thumbnailPath = $this->createThumbnail($columns, $rows, $sourcePath);
     }
 
+    public function __destruct()
+    {
+        if (!file_exists($this->thumbnailPath)) {
+            throw new ThumbnailsInternalServerErrorException('Error deleting thumbnail file.');
+        }
+        unlink($this->thumbnailPath);
+    }
+
     public function getThumbnailPath() : string
     {
         return $this->thumbnailPath;

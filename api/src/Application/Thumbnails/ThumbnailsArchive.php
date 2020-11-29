@@ -14,6 +14,7 @@ class ThumbnailsArchive implements JsonSerializable
     const THUMBNAILS_ARCHIVE_PATH = '/var/www/thumbnails/';
     private string $archiveName;
     private int $archiveSize;
+    private array $ThumbnailsArray = [];
     private array $thumbnailSizes = [
         [1000,1000],
         [900,900],
@@ -58,6 +59,7 @@ class ThumbnailsArchive implements JsonSerializable
         foreach ($this->thumbnailSizes as list($rows,$columns)) {
             $thumbnailNameAddition = '_' . $rows . '_' . $columns;
             $thumbnail = new Thumbnail($columns, $rows, $sourceImage->getThumbnailsSourcePath());
+            array_push($this->ThumbnailsArray, $thumbnail);
             $thumbnailFileName = $sourceImage->getSourceFileNamePart() . $thumbnailNameAddition . '.' . $sourceImage->getSourceFileExtensionPart();
             $zip->addFile($thumbnail->getThumbnailPath(), $thumbnailFileName);
         }
