@@ -68,6 +68,6 @@ class ThumbnailsSource
                 $sourceFileNamePart = $nameParts[0];
                 $sourceFileExtensionPart = '';
             }
-            return [$sourceFileNamePart, $$sourceFileExtensionPart];
+            return [$sourceFileNamePart, $sourceFileExtensionPart];
     }
 }
