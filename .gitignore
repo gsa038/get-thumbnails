@@ -1,0 +1,6 @@
+api/vendor
+logs/api/*
+logs/client/*
+api/composer.lock
+api/thumbnails/*
+.vscode
